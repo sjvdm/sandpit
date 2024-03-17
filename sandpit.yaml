@@ -1,0 +1,72 @@
+# Sandpit local dev multi-container application
+services:
+
+  #mariadb/mysql
+  mariadb:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+
+    #map local location to data loc for container
+    volumes:
+      - ./mysql-data:/var/lib/mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_HOST: '%'
+
+    #map ports to host:container
+    ports:
+      - 3306:3306
+
+    #expose ports on container. Required for other containers on same network to be able to access services
+    expose:
+      - 3306
+
+  #old phpmyadmin, now adminer
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+
+
+  #jupyterlab container
+  jupyter:
+    build:
+      #context to find build information. See Dockerfile in this dir.
+      context: ./jupyter/
+    ports:
+      - 8889:8888
+    volumes:
+      - ./jupyter-data:/home/jovyan/work
+    command: start-notebook.py --NotebookApp.token='local'
+
+  #mongo database
+  mongo:
+    image: mongo
+    restart: always
+    volumes:
+      - ./mongo-data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: password
+    expose:
+      - 27017
+    ports:
+      - 27017:27017
+    #command: [--auth]
+
+  #admin interface to connect to mongo
+  mongo-express:
+    image: mongo-express
+    restart: always
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: password
+      ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: root
