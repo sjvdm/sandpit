@@ -16,7 +16,7 @@ services:
       MYSQL_ROOT_PASSWORD: example
       MYSQL_ROOT_HOST: '%'
 
-    #map ports to host:container
+    #map ports to host:container. Enables say a local dbeaver instance to connect to this db.
     ports:
       - 3306:3306
 
@@ -41,6 +41,7 @@ services:
       - 8889:8888
     volumes:
       - ./jupyter-data:/home/jovyan/work
+      - /Users/sjvandermerwe/Fatti Dropbox/SJ van der Merwe/Analytics/analytics_vm_home_root/apps/fatti-analytics/scripts:/home/jovyan/work-local
     command: start-notebook.py --NotebookApp.token='local'
 
   #mongo database
