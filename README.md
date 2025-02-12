@@ -1,6 +1,6 @@
 # Sandpit
 
-This is a containerized sandpit application that contains the necessary basic services for data dev.
+This is a containerized sandpit application that contains the necessary basic services for AI and data dev.
 
 ## Prerequisites and install
 
@@ -26,6 +26,11 @@ For a full list, see the docker yaml file.
 
 - Jupyterlab
     - Access via [link](http://localhost:8889/lab)
+
+- Ollama based DeepSeek R1 model
+    - Based on [guide](https://dev.to/savvasstephnds/run-deepseek-locally-using-docker-2pdm)
+    - Runs in ollama service
+    - Exposes the API service by ollama-web, accessible at: http://localhost:3001/
 
 
 ## How to?

@@ -71,3 +71,18 @@ services:
       ME_CONFIG_MONGODB_URL: mongodb://root:password@mongo:27017/
       ME_CONFIG_BASICAUTH_USERNAME: root
       ME_CONFIG_BASICAUTH_PASSWORD: root
+
+  #for running local LLMs
+  ollama:
+    image: ollama/ollama
+    volumes:
+      - ./ollama-models:/root/.ollama
+    ports:
+      - 11434:11434
+
+  ollama-web:
+    image: nginx:1.27.3-alpine
+    volumes:
+    - ./ollama-web:/usr/share/nginx/html
+    ports:
+    - "3001:80"
